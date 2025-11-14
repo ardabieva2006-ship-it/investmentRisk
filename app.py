@@ -68,12 +68,12 @@ green_css = """
     color: white;
 }
 </style>
-"""
+
 st.markdown(green_css, unsafe_allow_html=True)
 
 st.title("Investment Risk Predictor")
 
-st.write("Введите **5 параметров**, остальные рассчитываются автоматически.")
+st.write("Enter just 5 values ​​- everything else is calculated automatically.")
 
 open_p = st.number_input("Open Price", value=100.0)
 high_p = st.number_input("High Price", value=101.0)
