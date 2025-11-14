@@ -3,9 +3,23 @@ import pickle
 import numpy as np
 import pandas as pd
 
-# -----------------------------
-# LOAD MODEL
-# -----------------------------
+import base64
+
+def add_logo():
+    with open("logo.png", "rb") as f:
+        data = f.read()
+    encoded = base64.b64encode(data).decode()
+
+    st.markdown(
+        f"""
+        <div style="display: flex; justify-content: center; margin-top: -30px;">
+            <img src="data:image/png;base64,{encoded}" width="220">
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+add_logo()
 @st.cache_resource
 def load_model():
     with open("risk_model.pkl", "rb") as f:
