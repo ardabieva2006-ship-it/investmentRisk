@@ -90,12 +90,16 @@ def compute_features(open_p, high_p, low_p, close_p, volume_p):
     })
 
     # заменяем последний день пользовательскими значениями
+    # заменяем последний день пользовательскими значениями
+
+    # заменяем последний день пользовательскими значениями
     df.loc[len(df)-1, "open"] = open_p
-    df.loc[len[df)-1, "high"] = high_p
+    df.loc[len(df)-1, "high"] = high_p
     df.loc[len(df)-1, "low"] = low_p
     df.loc[len(df)-1, "close"] = close_p
     df.loc[len(df)-1, "adj_close"] = close_p
     df.loc[len(df)-1, "volume"] = volume_p
+
 
     # ---- ФИЧИ как в обучении ----
     df["return"] = df["adj_close"].pct_change()
