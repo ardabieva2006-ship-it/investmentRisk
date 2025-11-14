@@ -3,9 +3,6 @@ import pickle
 import numpy as np
 import pandas as pd
 
-# -----------------------------
-# LOAD MODEL + FEATURES
-# -----------------------------
 @st.cache_resource
 def load_model():
     with open("risk_model.pkl", "rb") as f:
@@ -23,26 +20,23 @@ feature_cols = [
     "volatility_60"
 ]
 
-st.title("📈 Investment Risk Predictor")
+st.title("Investment Risk Predictor")
 
-st.write("Введите все 18 параметров, модель обучена именно на них:")
+st.write("Enter all 18 parameters, the model is trained on them:")
 
 inputs = {}
 
 for col in feature_cols:
     inputs[col] = st.number_input(col, value=0.0, format="%.6f")
 
-# -----------------------------
-# PREDICT
-# -----------------------------
 if st.button("Predict Risk Level"):
     X = pd.DataFrame([[inputs[col] for col in feature_cols]], columns=feature_cols)
 
     pred = model.predict(X)[0]
 
     if pred == 0:
-        st.success("🟢 Риск низкий (0)")
+        st.success("Low Risk(0)")
     elif pred == 1:
-        st.warning("🟡 Риск средний (1)")
+        st.warning("Medium Risk(1)")
     else:
-        st.error("🔴 Риск высокий (2)")
+        st.error("High Risk(2)")
