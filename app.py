@@ -28,7 +28,6 @@ def load_model():
 
 model = load_model()
 
-# FEATURES IN EXACT ORDER
 feature_cols = [
     "open", "high", "low", "close", "adj_close", "volume",
     "return", "spread", "return_5d", "volume_5d",
@@ -37,14 +36,11 @@ feature_cols = [
     "volatility_60"
 ]
 
-# -----------------------------
-# PAGE STYLING (GREEN THEME)
-# -----------------------------
 green_css = """
 <style>
 /* Main background */
 [data-testid="stAppViewContainer"] {
-    background-color: #eafaf1;
+    background-color: #D0F0C0;
 }
 
 /* Side bar */
@@ -75,10 +71,7 @@ green_css = """
 """
 st.markdown(green_css, unsafe_allow_html=True)
 
-# -----------------------------
-# UI
-# -----------------------------
-st.title("💚 Investment Risk Predictor")
+st.title("Investment Risk Predictor")
 
 st.write("Введите **5 параметров**, остальные рассчитываются автоматически.")
 
@@ -88,9 +81,6 @@ low_p = st.number_input("Low Price", value=99.0)
 close_p = st.number_input("Close Price", value=100.5)
 volume_p = st.number_input("Volume", value=1_000_000)
 
-# -----------------------------
-# AUTO FEATURES
-# -----------------------------
 ret = (close_p - open_p) / open_p if open_p != 0 else 0
 spread = close_p - open_p
 
@@ -109,9 +99,6 @@ return_lag2 = 0
 
 volatility_60 = 0
 
-# -----------------------------
-# PREPARE MODEL INPUT
-# -----------------------------
 X = pd.DataFrame([[
     open_p, high_p, low_p, close_p, close_p, volume_p,
     ret, spread, return_5d, volume_5d,
@@ -120,15 +107,12 @@ X = pd.DataFrame([[
     volatility_60
 ]], columns=feature_cols)
 
-# -----------------------------
-# PREDICT
-# -----------------------------
 if st.button("Predict Risk Level"):
     pred = model.predict(X)[0]
 
     if pred == 0:
-        st.success("🟢 LOW RISK (0)")
+        st.success(" LOW RISK (0)")
     elif pred == 1:
-        st.warning("🟡 MEDIUM RISK (1)")
+        st.warning(" MEDIUM RISK (1)")
     else:
-        st.error("🔴 HIGH RISK (2)")
+        st.error(" HIGH RISK (2)")
