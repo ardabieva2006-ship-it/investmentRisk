@@ -1,57 +1,48 @@
 import streamlit as st
 import pickle
-import json
 import numpy as np
+import pandas as pd
 
-# ---------------------------
-# Load Model and Feature List
-# ---------------------------
+# -----------------------------
+# LOAD MODEL + FEATURES
+# -----------------------------
 @st.cache_resource
 def load_model():
     with open("risk_model.pkl", "rb") as f:
         model = pickle.load(f)
+    return model
 
-    with open("feature_cols.json", "r") as f:
-        feature_cols = json.load(f)
+model = load_model()
 
-    return model, feature_cols
+# FEATURES IN EXACT ORDER:
+feature_cols = [
+    "open", "high", "low", "close", "adj_close", "volume",
+    "return", "spread", "return_5d", "volume_5d",
+    "sma_5", "sma_10", "sma_ratio", "momentum_10",
+    "range", "return_lag1", "return_lag2",
+    "volatility_60"
+]
 
-model, feature_cols = load_model()
+st.title("📈 Investment Risk Predictor")
 
-st.title("📈 Investment Risk Prediction App")
-st.write("Enter market indicators below to estimate the risk level.")
+st.write("Введите все 18 параметров, модель обучена именно на них:")
 
-# ---------------------------
-# Input form for all features
-# ---------------------------
 inputs = {}
 
-st.subheader("Input Features")
+for col in feature_cols:
+    inputs[col] = st.number_input(col, value=0.0, format="%.6f")
 
-for feature in feature_cols:
-    inputs[feature] = st.number_input(
-        f"{feature}",
-        value=0.0,
-        format="%.6f"
-    )
+# -----------------------------
+# PREDICT
+# -----------------------------
+if st.button("Predict Risk Level"):
+    X = pd.DataFrame([[inputs[col] for col in feature_cols]], columns=feature_cols)
 
-# Convert to correct order
-X = np.array([[inputs[f] for f in feature_cols]])
+    pred = model.predict(X)[0]
 
-# ---------------------------
-# Make Prediction
-# ---------------------------
-if st.button("Predict Risk"):
-    try:
-        pred = model.predict(X)[0]
-
-        risk_map = {
-            0: "🟢 LOW RISK",
-            1: "🟡 MEDIUM RISK",
-            2: "🔴 HIGH RISK"
-        }
-
-        st.success(f"Prediction: {risk_map.get(pred, pred)}")
-
-    except Exception as e:
-        st.error(f"Error: {e}")
+    if pred == 0:
+        st.success("🟢 Риск низкий (0)")
+    elif pred == 1:
+        st.warning("🟡 Риск средний (1)")
+    else:
+        st.error("🔴 Риск высокий (2)")
